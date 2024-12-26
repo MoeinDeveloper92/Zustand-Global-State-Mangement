@@ -1,10 +1,14 @@
-import { STATUS, TaskDto } from '@/@type/type';
+import { STATUS, Task } from '@/@type/type';
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { useTaskStore } from '@/store/store';
 
-const Task = ({ task }: { task: TaskDto }) => {
+const Task = ({ task }: { task: Task }) => {
+  const dragTask = useTaskStore((state) => state.dragTask);
+  const removeTask = useTaskStore((state) => state.removeTask);
   return (
     <div
+      draggable
       className={cn(
         'flex cursor-move items-start justify-between rounded-lg bg-white px-3 py-2 text-gray-900',
         {
@@ -13,13 +17,14 @@ const Task = ({ task }: { task: TaskDto }) => {
           'border-2 border-emerald-500': task.status === STATUS.DONE,
         }
       )}
+      onDrag={() => dragTask(task.id)}
     >
       <div>
         <h3 className="font-medium text-gray-700">{task.title}</h3>
         <p className="text-sm font-light text-gray-500">{task.description}</p>
       </div>
 
-      <button className="cursor-pointer">
+      <button className="cursor-pointer" onClick={() => removeTask(task.id)}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
